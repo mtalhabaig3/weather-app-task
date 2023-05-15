@@ -14,7 +14,52 @@ import {
 const API_ENDPOINT = "https://api.openweathermap.org/data/2.5/weather";
 const API_KEY = "a074728a9c1e6be576a6af3af11f03c2";
 
-export default function Home() {
+const labelStyle = {
+  display: "block",
+  marginBottom: "0.5rem",
+  fontWeight: "bold",
+};
+
+const inputStyle = {
+  padding: "0.5rem",
+  fontSize: "1rem",
+  border: "1px solid #ccc",
+  borderRadius: "0.25rem",
+};
+
+const buttonStyle = {
+  padding: "0.5rem 1rem",
+  fontSize: "1rem",
+  backgroundColor: "#0077cc",
+  color: "white",
+  border: "none",
+  borderRadius: "0.25rem",
+};
+
+const errorStyle = {
+  color: "red",
+  marginTop: "0.5rem",
+};
+
+const weatherStyle = {
+  marginTop: "1rem",
+  backgroundColor: "#f7f7f7",
+  borderRadius: "0.25rem",
+  padding: "1rem",
+};
+
+const weatherHeaderStyle = {
+  marginBottom: "1rem",
+};
+
+const weatherIconStyle = {
+  width: "50px",
+  height: "50px",
+  display: "inline-block",
+  marginRight: "0.5rem",
+};
+
+const Home = () => {
   const dispatch = useDispatch();
   const city = useSelector(selectCity);
   const weather = useSelector(selectWeather);
@@ -45,19 +90,27 @@ export default function Home() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <label>
-          Enter City:
-          <input type="text" value={city} onChange={handleChange} />
+        <label style={labelStyle}>
+          Enter City{" "}
+          <input
+            type="text"
+            value={city}
+            onChange={handleChange}
+            style={inputStyle}
+          />
         </label>
-        <button type="submit">Search</button>
+        <button type="submit" style={buttonStyle}>
+          Search
+        </button>
       </form>
-      {error && <p>{error}</p>}
+      {error && <p style={errorStyle}>{error}</p>}
       {weather && (
-        <div>
-          <h2>{weather.weather[0].main} </h2>
+        <div style={weatherStyle}>
+          <h2 style={weatherHeaderStyle}>{weather.weather[0].main} </h2>
           <img
             src={`http://openweathermap.org/img/w/${weather.weather[0].icon}.png`}
             alt={weather.weather[0].main}
+            style={weatherIconStyle}
           />
           <p>Temperature: {weather.main.temp}&deg;F</p>
           <p>City: {weather.name}</p>
@@ -65,4 +118,6 @@ export default function Home() {
       )}
     </div>
   );
-}
+};
+
+export default Home;

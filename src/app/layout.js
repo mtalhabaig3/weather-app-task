@@ -13,6 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* Importing Providers component because layout component cannot be client side*/}
         <Providers>{children} </Providers>
       </body>
     </html>
