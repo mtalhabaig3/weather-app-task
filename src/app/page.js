@@ -1,14 +1,24 @@
 "use client";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import {
+  setCity,
+  selectCity,
+  setWeather,
+  selectWeather,
+  setError,
+  selectError,
+} from "./redux/weatherSlice";
 
 const API_ENDPOINT = "https://api.openweathermap.org/data/2.5/weather";
 const API_KEY = "a074728a9c1e6be576a6af3af11f03c2";
 
 export default function Home() {
-  const [city, setCity] = useState("");
-  const [weather, setWeather] = useState(null);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const city = useSelector(selectCity);
+  const weather = useSelector(selectWeather);
+  const error = useSelector(selectError);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,19 +29,17 @@ export default function Home() {
       );
       const responseData = response.data;
 
-      setWeather(responseData);
-      setError(null);
+      dispatch(setWeather(response.data));
+      dispatch(setError(null));
     } catch (error) {
       console.error(error);
-      setError(
-        "An error occurred while fetching weather data. Please try again later."
-      );
-      setWeather(null);
+      dispatch(setError("An error occurred. Please try again later."));
+      dispatch(setWeather(null));
     }
   };
 
   const handleChange = (event) => {
-    setCity(event.target.value);
+    dispatch(setCity(event.target.value));
   };
 
   return (

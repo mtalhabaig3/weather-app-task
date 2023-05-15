@@ -1,30 +1,30 @@
+"use client";
 import { createSlice } from "@reduxjs/toolkit";
 
-const weatherSlice = createSlice({
+export const weatherSlice = createSlice({
   name: "weather",
   initialState: {
-    data: null,
-    isLoading: false,
+    city: "",
+    weather: null,
     error: null,
   },
   reducers: {
-    fetchDataStart: (state) => {
-      state.isLoading = true;
-      state.error = null;
+    setCity: (state, action) => {
+      state.city = action.payload;
     },
-    fetchDataSuccess: (state, action) => {
-      state.data = action.payload;
-      state.isLoading = false;
-      state.error = null;
+    setWeather: (state, action) => {
+      state.weather = action.payload;
     },
-    fetchDataFailure: (state, action) => {
-      state.isLoading = false;
+    setError: (state, action) => {
       state.error = action.payload;
     },
   },
 });
 
-export const { fetchDataStart, fetchDataSuccess, fetchDataFailure } =
-  weatherSlice.actions;
+export const { setCity, setWeather, setError } = weatherSlice.actions;
+
+export const selectCity = (state) => state.weather.city;
+export const selectWeather = (state) => state.weather.weather;
+export const selectError = (state) => state.weather.error;
 
 export default weatherSlice.reducer;
