@@ -26,6 +26,8 @@ const Home = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    dispatch(setWeather(null));
+    dispatch(setError(null));
     if (city === "") {
       dispatch(setError("City cannot be empty"));
       return;
@@ -45,7 +47,7 @@ const Home = () => {
       dispatch(setError(error.response.data.message));
       dispatch(setWeather(null));
     }
-    setLoading(false);
+    setLoading(true);
   };
 
   const handleChange = (event) => {
