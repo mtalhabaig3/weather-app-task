@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import "./page.css";
 import {
   setCity,
   selectCity,
@@ -14,73 +15,37 @@ import {
 const API_ENDPOINT = "https://api.openweathermap.org/data/2.5/weather";
 const API_KEY = "a074728a9c1e6be576a6af3af11f03c2";
 
-const labelStyle = {
-  display: "block",
-  marginBottom: "0.5rem",
-  fontWeight: "bold",
-};
-
-const inputStyle = {
-  padding: "0.5rem",
-  fontSize: "1rem",
-  border: "1px solid #ccc",
-  borderRadius: "0.25rem",
-};
-
-const buttonStyle = {
-  padding: "0.5rem 1rem",
-  fontSize: "1rem",
-  backgroundColor: "#0077cc",
-  color: "white",
-  border: "none",
-  borderRadius: "0.25rem",
-};
-
-const errorStyle = {
-  color: "red",
-  marginTop: "0.5rem",
-};
-
-const weatherStyle = {
-  marginTop: "1rem",
-  backgroundColor: "#f7f7f7",
-  borderRadius: "0.25rem",
-  padding: "1rem",
-};
-
-const weatherHeaderStyle = {
-  marginBottom: "1rem",
-};
-
-const weatherIconStyle = {
-  width: "50px",
-  height: "50px",
-  display: "inline-block",
-  marginRight: "0.5rem",
-};
-
 const Home = () => {
   const dispatch = useDispatch();
   const city = useSelector(selectCity);
   const weather = useSelector(selectWeather);
   const error = useSelector(selectError);
+  const [loading, setLoading] = useState(true);
+
+  console.log(weather);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (city === "") {
+      dispatch(setError("City cannot be empty"));
+      return;
+    }
+    setLoading(false);
 
     try {
       const response = await axios.get(
         `${API_ENDPOINT}?q=${city}&appid=${API_KEY}&units=imperial`
       );
-      const responseData = response.data;
 
       dispatch(setWeather(response.data));
       dispatch(setError(null));
     } catch (error) {
       console.error(error);
-      dispatch(setError("An error occurred. Please try again later."));
+
+      dispatch(setError(error.response.data.message));
       dispatch(setWeather(null));
     }
+    setLoading(false);
   };
 
   const handleChange = (event) => {
@@ -88,32 +53,50 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="container">
+      <h1 className="title">Weather App</h1>
       <form onSubmit={handleSubmit}>
-        <label style={labelStyle}>
+        <label className="label">
           Enter City{" "}
           <input
             type="text"
             value={city}
             onChange={handleChange}
-            style={inputStyle}
+            className="input"
           />
         </label>
-        <button type="submit" style={buttonStyle}>
-          Search
-        </button>
+
+        <div className="search-button">
+          <button type="submit" className="button">
+            Search
+          </button>
+        </div>
+        {!loading && <p>Please wait...</p>}
+        {error && <p className="error">{error}</p>}
       </form>
-      {error && <p style={errorStyle}>{error}</p>}
+
       {weather && (
-        <div style={weatherStyle}>
-          <h2 style={weatherHeaderStyle}>{weather.weather[0].main} </h2>
+        <div className="weather">
+          <h2 className="weather-header">{weather.weather[0].main} </h2>
           <img
             src={`http://openweathermap.org/img/w/${weather.weather[0].icon}.png`}
             alt={weather.weather[0].main}
-            style={weatherIconStyle}
+            className="weather-icon"
           />
-          <p>Temperature: {weather.main.temp}&deg;F</p>
-          <p>City: {weather.name}</p>
+
+          <p className="bold">
+            City: <p className="normal">{weather.name}</p>
+          </p>
+          <p className="bold">
+            Temperature: <p className="normal">{weather.main.temp}&deg;F</p>
+          </p>
+          <p className="bold">
+            Feels Like:{" "}
+            <p className="normal">{weather.main.feels_like}&deg;F</p>
+          </p>
+          <p className="bold">
+            Humidity: <p className="normal">{weather.main.humidity}</p>
+          </p>
         </div>
       )}
     </div>
